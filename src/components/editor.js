@@ -4,28 +4,38 @@ import {hJSX} from '@cycle/dom';
 import {markdown} from 'markdown';
 
 export default function editor(responses) {
+	const initialRange = 500;
+	
 	function intent(DOM) {
-		let keyups$ = DOM.select('#code').events('keyup');
+		const keyups$ = DOM.select('#code').events('keyup');
+		const delay$ = DOM.select('#delay').events('input').map(e => parseInt(e.target.value, 10)).startWith(initialRange);
 		return {
-			update$: keyups$.debounce(250)
-			
+			keyup$: keyups$,
+			delay$: delay$
 		};
 	}
 
 	function model(context, actions) {
-		return actions.update$
-			.map(e => ({
-					html: markdown.toHTML(document.querySelector('#code').value)
-				})
-			)
-			.startWith('');	
+		const html$ = actions.delay$.flatMapLatest(d => actions.keyup$.debounce(d))
+			.map(e => ({html: markdown.toHTML(document.querySelector('#code').value)}))
+			.startWith('');
+		return Rx.Observable.combineLatest(html$, actions.delay$, (htmlStream, delay) => ({html: htmlStream.html, delay}));
 	}
-
+	
 	function view(state$) {
-		return state$.map(({html}) =>
+		return state$.map(({html, delay}) =>
 			<div className="editor">
-				<textarea id="code"></textarea>
-				<div id="result" innerHTML={html}></div>
+				<div className="controls">
+					<input type="range" id="delay" min="0" max="1000" value={delay} />
+					<label htmlFor="delay">{delay}</label> 
+				</div>
+				<div className="panes">
+					<textarea id="code"></textarea>
+					<div className="result">
+						<div id="result-rendered" innerHTML={html}></div>
+						<pre id="result-pre">{html}</pre>
+					</div>
+				</div>
 			</div>
 		);
 	}
