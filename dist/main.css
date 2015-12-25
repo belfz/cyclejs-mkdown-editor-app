@@ -20,6 +20,8 @@ html, body {
 
 .controls {
 	height: 25px;
+	display: flex;
+	align-items: center;
 }
 
 .panes {
@@ -77,9 +79,10 @@ html, body {
 	}
 	#code {
 		width: 100%;
-		height: 500px;
+		height: 250px;
 	}
 	.result {
 		width: 100%;
+		height: 400px;
 	}
 }
