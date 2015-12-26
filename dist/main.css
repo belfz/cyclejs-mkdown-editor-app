@@ -55,6 +55,7 @@ html, body {
 	flex: 1;
 	overflow: auto;
 	padding: 5px;
+	border: 1px solid white;
 }
 
 #result-pre:before {
@@ -70,6 +71,11 @@ html, body {
 	margin: 10px 0 0;
 	background-color: gainsboro;
 	padding: 5px;
+	border: 1px solid gainsboro;
+}
+
+#result-rendered:hover, #result-pre:hover {
+	border: 1px solid steelblue;
 }
 
 @media (max-width: 768px) {
