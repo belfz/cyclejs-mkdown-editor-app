@@ -12,6 +12,7 @@
   "dependencies": {
     "@cycle/core": "^5.0.1",
     "@cycle/dom": "^7.1.1",
+    "@cycle/storage": "^2.0.3",
     "babel-core": "^6.3.17",
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-react-jsx": "^6.3.13",
