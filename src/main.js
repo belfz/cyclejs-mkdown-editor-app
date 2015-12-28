@@ -2,25 +2,26 @@
 import Rx from 'rx';
 import Cycle from '@cycle/core';
 import {hJSX, makeDOMDriver} from '@cycle/dom';
+import isolate from '@cycle/isolate';
 import storageDriver from '@cycle/storage';
 import editor from './components/editor';
 
 const content = window.localStorage.getItem('cctext') || '';
 
 function main({DOM, storage}) {
+  const editorComponent = isolate(editor)({DOM, storage});
+  
   return {
-    DOM: storage.local.getItem('cctext').startWith('').map(content =>
+    DOM: Rx.Observable.just(
       <div id="container"> 
-        <editor id="editor-custom-element" text={content}/>
+        {editorComponent.DOM}
       </div>
       ),
-    storage: DOM.select('#editor-custom-element').events('save').map(({detail}) => ({key: 'cctext', value: detail}))  
+    storage: editorComponent.storage  
   };
 }
 
 Cycle.run(main, {
-  DOM: makeDOMDriver('#app', {
-    'editor': editor
-  }),
+  DOM: makeDOMDriver('#app'),
   storage: storageDriver
 });

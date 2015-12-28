@@ -14,11 +14,11 @@ export default function editor(responses) {
 	}
 
 	function model(context, actions) {
-		const text$ = context.props.get('text');
+		const text$ = context.storage.local.getItem('cctext');
 		const html$ = text$.merge(
 				actions.delay$.flatMapLatest(d => actions.keyup$.debounce(d)).map(e => e.target.value)
 			)
-			.map(e => ({html: markdown.toHTML(e)}))
+			.map(e => ({html: markdown.toHTML(e || '')}))
 			.startWith({html: ''});
 		
 		return Rx.Observable.combineLatest(html$, actions.delay$, text$, (htmlStream, delay, text) => ({html: htmlStream.html, delay, text}));
@@ -47,8 +47,6 @@ export default function editor(responses) {
 	
 	return {
 		DOM: vtree$,
-		events: {
-			save: actions.keyup$.map(e => e.target.value).debounce(1000)
-		}
+		storage: actions.keyup$.map(e => ({key: 'cctext', value: e.target.value})).debounce(1000)
 	};
 };
