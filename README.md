@@ -2,7 +2,9 @@
 
 A markdown editor created with [Cycle.js](http://cycle.js.org/), JSX, ES2015 and webpack.
 
-##Installation
-`git clone`
+## Installation
 
-`npm install`
+```
+$ git clone
+$ npm install
+```
